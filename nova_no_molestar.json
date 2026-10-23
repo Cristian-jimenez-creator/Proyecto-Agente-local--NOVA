@@ -1,0 +1,18 @@
+{
+  "activo_manual": false,
+  "apps_excluidas": [
+    "zoom",
+    "meet",
+    "google meet",
+    "teams",
+    "discord",
+    "obs",
+    "powerpoint",
+    "presentación",
+    "presentation",
+    "streamlabs",
+    "premiere",
+    "davinci resolve",
+    "obs studio"
+  ]
+}

@@ -1,0 +1,199 @@
+2026-09-06 12:11:55,973 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-06 12:11:56,116 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-06 12:12:39,663 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-06 12:12:39,772 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-06 14:10:19,383 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-06 14:10:19,515 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-06 14:10:51,077 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-06 14:10:51,188 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-06 18:23:03,906 | DEBUG    | nova_vision | nova_vision:88 | [VISION] dxcam no disponible. Instala: pip install dxcam (Windows + GPU DX11)
+2026-09-06 18:23:03,907 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-06 18:23:03,907 | INFO     | nova_vision | nova_vision:161 | [VISION] Captura por PIL.ImageGrab (fallback más lento, considera instalar mss o dxcam).
+2026-09-06 18:23:03,908 | DEBUG    | nova_vision | nova_vision:286 | [VISION] EasyOCR no disponible. Instala: pip install easyocr
+2026-09-06 18:23:03,909 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-06 18:24:32,064 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-06 18:24:32,177 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-06 18:24:43,584 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-06 18:24:43,691 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-06 18:24:57,301 | ERROR    | nova_vision | nova_vision:713 | Excepcion silenciada en obtener_info_rapida_sacadica
+Traceback (most recent call last):
+  File "C:\NovaIA\nova_vision.py", line 711, in obtener_info_rapida_sacadica
+    fg = uia.GetForegroundControl()
+  File "C:\NovaIA\.venv\Lib\site-packages\uiautomation\uiautomation.py", line 10395, in GetForegroundControl
+    return ControlFromHandle(GetForegroundWindow())
+  File "C:\NovaIA\.venv\Lib\site-packages\uiautomation\uiautomation.py", line 10461, in ControlFromHandle
+    return Control.CreateControlFromElement(_AutomationClient.instance().IUIAutomation.ElementFromHandle(handle))
+                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+_ctypes.COMError: (-2146233083, None, (None, None, None, 0, None))
+2026-09-06 19:00:22,002 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-06 19:00:22,158 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-06 19:00:57,286 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-06 19:00:57,392 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-06 19:24:19,709 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-06 19:24:19,820 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-06 19:24:36,991 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-06 19:24:37,107 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-06 19:53:00,861 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-06 19:53:00,974 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-06 19:53:25,016 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-06 19:53:25,135 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-06 19:55:23,159 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-06 19:55:23,269 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-06 19:55:49,558 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-06 19:55:49,679 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-06 20:22:29,219 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-06 20:22:29,331 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-06 20:22:40,631 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-06 20:22:40,739 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-06 20:22:55,356 | ERROR    | nova_vision | nova_vision:713 | Excepcion silenciada en obtener_info_rapida_sacadica
+Traceback (most recent call last):
+  File "C:\NovaIA\nova_vision.py", line 711, in obtener_info_rapida_sacadica
+    fg = uia.GetForegroundControl()
+  File "C:\NovaIA\.venv\Lib\site-packages\uiautomation\uiautomation.py", line 10395, in GetForegroundControl
+    return ControlFromHandle(GetForegroundWindow())
+  File "C:\NovaIA\.venv\Lib\site-packages\uiautomation\uiautomation.py", line 10461, in ControlFromHandle
+    return Control.CreateControlFromElement(_AutomationClient.instance().IUIAutomation.ElementFromHandle(handle))
+                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+_ctypes.COMError: (-2146233083, None, (None, None, None, 0, None))
+2026-09-06 23:59:03,127 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-06 23:59:03,293 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-07 00:00:06,837 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-07 00:00:06,953 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-07 18:35:03,947 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-07 18:35:04,074 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-07 18:35:46,257 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-07 18:35:46,365 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-07 19:40:55,500 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-07 19:40:55,659 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-07 19:42:44,437 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-07 19:42:44,561 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-07 21:58:04,705 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-07 21:58:04,864 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-07 21:58:42,237 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-07 21:58:42,343 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-08 18:26:55,248 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-08 18:26:55,406 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-08 18:27:47,623 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-08 18:27:47,732 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-08 19:05:50,859 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-08 19:05:51,009 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-08 19:06:43,654 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-08 19:06:43,765 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-10 19:58:03,064 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-10 19:58:03,230 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-10 19:59:54,059 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-10 19:59:54,244 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-12 20:13:19,526 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-12 20:13:19,712 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-12 20:14:06,894 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-12 20:14:23,701 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-12 20:14:23,812 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-12 20:14:36,093 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-12 20:17:59,126 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-12 20:17:59,240 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-12 20:18:10,068 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-12 20:18:16,033 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-12 20:18:16,152 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-12 20:18:26,413 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-12 20:30:54,272 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-12 20:30:54,405 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-12 20:31:08,287 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-12 20:31:15,038 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-12 20:31:15,159 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-12 20:31:34,039 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-12 20:37:59,788 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-12 20:37:59,903 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-12 20:38:06,491 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-12 20:38:12,555 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-12 20:38:12,664 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-12 20:38:19,965 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-13 15:10:48,283 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-13 15:10:48,449 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-13 15:11:20,570 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-13 15:11:35,024 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-13 15:11:35,132 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-13 15:11:41,411 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-13 18:30:19,966 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-13 18:30:20,084 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-13 18:30:29,541 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-13 18:30:34,504 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-13 18:30:34,612 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-13 18:30:39,584 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-13 18:51:12,575 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-13 18:51:12,687 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-13 18:51:18,819 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-13 18:51:23,317 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-13 18:51:23,427 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-13 18:51:29,342 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-13 18:52:54,695 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-13 18:52:54,814 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-13 18:53:10,341 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-13 18:54:40,357 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-13 18:54:40,471 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-13 18:54:46,579 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-21 19:43:40,807 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-21 19:43:40,956 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-21 19:44:22,585 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-21 19:44:34,450 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-21 19:44:34,557 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-21 19:44:39,703 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-21 19:45:40,275 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-21 19:45:40,381 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-21 19:45:45,778 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-21 19:47:37,970 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-21 19:47:38,075 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-21 19:47:42,435 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-21 19:49:01,640 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-21 19:49:01,749 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-21 19:49:11,802 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-21 19:56:54,654 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-21 19:56:54,763 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-21 19:56:58,935 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-21 19:57:02,611 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-21 19:57:02,717 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-21 19:57:07,440 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-21 20:00:07,738 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-21 20:00:07,845 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-21 20:00:18,222 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-21 20:05:42,074 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-21 20:05:42,181 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-21 20:05:49,765 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-21 20:05:53,656 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-21 20:05:53,763 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-21 20:05:59,371 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-21 20:20:57,476 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-21 20:20:57,582 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-21 20:21:01,714 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-21 20:21:05,380 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-21 20:21:05,489 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-21 20:21:10,376 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-21 20:40:41,570 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-21 20:40:41,675 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-21 20:40:45,084 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-21 20:40:48,222 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-21 20:40:48,326 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-21 20:40:51,504 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-21 20:52:42,953 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-21 20:52:43,058 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-21 20:52:46,503 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-21 20:52:49,498 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-21 20:52:49,605 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-21 20:52:53,045 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-21 20:59:35,789 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-21 20:59:35,896 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-21 20:59:40,500 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-29 20:04:32,838 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-29 20:04:33,000 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-29 20:04:58,293 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-29 20:05:10,321 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-29 20:05:10,429 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-29 20:05:19,650 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-29 20:07:57,554 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-29 20:07:57,657 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-29 20:08:01,549 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-29 20:59:16,700 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-29 20:59:16,850 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-29 21:00:17,833 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation
+2026-09-29 21:00:32,866 | DEBUG    | nova_vision | nova_vision:95 | [VISION] mss no disponible. Instala: pip install mss
+2026-09-29 21:00:32,973 | INFO     | nova_vision | nova_vision:152 | [VISION] Captura por dxcam (Desktop Duplication API / GPU).
+2026-09-29 21:00:47,631 | DEBUG    | nova_vision | nova_vision:300 | [VISION] uiautomation no disponible. Instala: pip install uiautomation

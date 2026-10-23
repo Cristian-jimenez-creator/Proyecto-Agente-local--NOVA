@@ -1,0 +1,54 @@
+# requirements.txt — Nova
+# Armado a partir de los imports reales vistos en: nova_asistente.py,
+# nova_mente_core.py, nova_skills/*.py, nova_vision.py, y los agregados
+# recientes (documentos.py, DLLs de GPU para faster-whisper).
+#
+# Instalar con: python -m pip install -r requirements.txt
+
+# --- UI / cuerpo de la app ---
+customtkinter
+
+# --- IA / LLM ---
+ollama
+chromadb
+
+# --- Audio: captura, reproducción, síntesis, reconocimiento ---
+pygame
+pyaudio
+sounddevice
+soundfile
+speechrecognition
+vosk
+faster-whisper
+piper-tts
+noisereduce
+
+# --- Aceleración GPU para faster-whisper (ctranslate2) ---
+nvidia-cublas-cu12
+nvidia-cudnn-cu12
+
+# --- Visión / captura de pantalla ---
+pillow
+easyocr
+dxcam
+numpy
+
+# --- Control de PC: mouse, teclado, ventanas, procesos ---
+pyautogui
+pynput
+pygetwindow
+psutil
+
+# --- Archivos ---
+send2trash
+
+# --- Sistema ---
+pyperclip
+screen-brightness-control
+
+# --- Red ---
+requests
+
+# --- Documentos Word / Excel (nova_skills/documentos.py) ---
+python-docx
+openpyxl

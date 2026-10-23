@@ -1,0 +1,2 @@
+/* Nova se usa para programarse a sí misma (el usuario la abre mientras trabaja en nova_mente_core.py). 
+Meta-proyecto confirmado. */

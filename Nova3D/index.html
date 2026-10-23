@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Nova 3D</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: transparent !important;
+            overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        #canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            background: transparent;
+            outline: none;
+        }
+        #nova-status, #nova-error {
+            display: none !important;
+        }
+        /* Ícono de estado sobre la cabeza del modelo — pensando/escuchando/
+           hablando/error. 'idle' (no está haciendo nada) no muestra nada,
+           a propósito: un ícono constante sería ruido visual, no información. */
+        #estado-icono {
+            position: fixed;
+            top: 6%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 30px;
+            z-index: 50;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+            user-select: none;
+        }
+        #estado-icono.visible { opacity: 1; }
+        #estado-icono.pulso { animation: novaEstadoPulso 1.1s ease-in-out infinite; }
+        @keyframes novaEstadoPulso {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.18); }
+        }
+    </style>
+<base target="_blank">
+<base target="_blank">
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <div id="estado-icono"></div>
+    <div id="nova-status">Iniciando...</div>
+    <div id="nova-error"></div>
+
+    <script type="module">
+        const canvas = document.getElementById('canvas');
+
+        let THREE, GLTFLoader, VRMLoaderPlugin, VRMUtils;
+        try {
+            THREE = await import('./js/three.module.js');
+            const gltfMod = await import('./js/GLTFLoader.module.js');
+            GLTFLoader = gltfMod.GLTFLoader;
+            const vrmMod = await import('./js/three-vrm.module.js');
+            VRMLoaderPlugin = vrmMod.VRMLoaderPlugin;
+            VRMUtils = vrmMod.VRMUtils;
+        } catch (e) {
+            console.error('[NOVA3D] ERROR:', e);
+            throw e;
+        }
+
+        const renderer = new THREE.WebGLRenderer({
+            canvas: canvas,
+            antialias: true,
+            alpha: true,
+            powerPreference: 'high-performance'
+        });
+        renderer.setSize(canvas.clientWidth || window.innerWidth, canvas.clientHeight || window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        renderer.setClearColor(0x000000, 0);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, (canvas.clientWidth || window.innerWidth) / (canvas.clientHeight || window.innerHeight), 0.01, 100);
+        camera.position.set(0, 1.2, 2.8);
+
+        scene.add(new THREE.AmbientLight(0xffffff, 1.2));
+        const key = new THREE.DirectionalLight(0xffffff, 2.5);
+        key.position.set(3, 5, 3);
+        key.castShadow = true;
+        key.shadow.mapSize.width = 1024;
+        key.shadow.mapSize.height = 1024;
+        scene.add(key);
+        const fill = new THREE.DirectionalLight(0xccddff, 1.2);
+        fill.position.set(-3, 2, 3);
+        scene.add(fill);
+        const rim = new THREE.DirectionalLight(0xffaa88, 1.0);
+        rim.position.set(0, 3, -4);
+        scene.add(rim);
+
+        let vrm = null;
+        let clock = new THREE.Clock();
+        let isSpeaking = false;
+        let blinkTimer = 0;
+        let nextBlink = 2 + Math.random() * 4;
+        let animFrameId = null;
+        let isDestroyed = false;
+        let loadAttempts = 0;
+        const MAX_LOAD_ATTEMPTS = 3;
+        let currentState = 'idle';
+
+        const ALL_EXPRESSIONS = ['happy','angry','sad','relaxed','surprised','neutral','blink','blinkLeft','blinkRight'];
+        const LIP_EXPRESSIONS = ['aa','ih','ou','ee','oh'];
+        const EXPRESSION_FALLBACK = {
+            'love': ['relaxed', 0.8],
+            'tired': ['sad', 0.6],
+            'shy': ['relaxed', 0.5],
+            'confused': ['surprised', 0.4],
+            'proud': ['happy', 0.9],
+            'worried': ['sad', 0.7],
+            'wink': ['blinkLeft', 1.0],
+            'smile': ['happy', 0.8],
+            'frown': ['angry', 0.6],
+            'shocked': ['surprised', 1.0],
+            'determined': ['angry', 0.5],
+            'excited': ['happy', 1.0]
+        };
+
+        // ==================== CONFIGURACIÓN DE BRAZOS ====================
+        // Si los brazos no bajan, prueba cambiar estos valores:
+        // axis: 'x', 'y' o 'z' (depende de la orientación de tu modelo)
+        // angle: en radianes. -1.57 = 90° hacia abajo. Prueba entre -0.8 y -1.6
+        const ARM_CONFIG = {
+            leftUpperArm:  { axis: 'z', angle: -1.25, twist: 0.15 },
+            rightUpperArm: { axis: 'z', angle: 1.25,  twist: -0.15 },
+            leftLowerArm:  { axis: 'x', angle: -0.70, twist: 0 },
+            rightLowerArm: { axis: 'x', angle: -0.70, twist: 0 },
+        };
+        // ==================== FIN CONFIGURACIÓN ====================
+
+        class SeededRandom {
+            constructor(seed = 12345) { this.seed = seed; }
+            next() {
+                this.seed = (this.seed * 16807 + 0) % 2147483647;
+                return (this.seed - 1) / 2147483646;
+            }
+            range(min, max) { return min + this.next() * (max - min); }
+        }
+        const rng = new SeededRandom(42);
+
+        function smoothNoise(t) {
+            return Math.sin(t) + Math.sin(t * 2.1) * 0.5 + Math.sin(t * 4.3) * 0.25 + Math.sin(t * 8.7) * 0.125;
+        }
+
+        function fbm(t, octaves = 4) {
+            let value = 0, amplitude = 0.5, frequency = 1;
+            for (let i = 0; i < octaves; i++) {
+                value += amplitude * smoothNoise(t * frequency);
+                amplitude *= 0.5;
+                frequency *= 2.1;
+            }
+            return value;
+        }
+
+        function fixMaterials(root) {
+            root.traverse((obj) => {
+                if (!obj.isMesh && !obj.isSkinnedMesh) return;
+                const oldMats = Array.isArray(obj.material) ? obj.material : [obj.material];
+                const newMats = oldMats.map((oldMat) => {
+                    if (!oldMat) return new THREE.MeshStandardMaterial({ color: 0xffaaaa, side: THREE.DoubleSide });
+                    let map = null;
+                    if (oldMat.map) map = oldMat.map;
+                    else if (oldMat.uniforms?._MainTex?.value) map = oldMat.uniforms._MainTex.value;
+                    else if (oldMat.uniforms?.map?.value) map = oldMat.uniforms.map.value;
+
+                    let color = new THREE.Color(0xffffff);
+                    if (oldMat.color) color = oldMat.color.clone();
+                    else if (oldMat.uniforms?._Color?.value) color = oldMat.uniforms._Color.value.clone();
+                    else if (oldMat.uniforms?.diffuse?.value) color = oldMat.uniforms.diffuse.value.clone();
+
+                    const newMat = new THREE.MeshStandardMaterial({
+                        color: color, map: map, roughness: 0.6, metalness: 0.1,
+                        side: THREE.DoubleSide, transparent: oldMat.transparent || false,
+                        opacity: oldMat.opacity !== undefined ? oldMat.opacity : 1.0,
+                    });
+                    if (map) newMat.color.set(0xffffff);
+                    return newMat;
+                });
+                obj.material = newMats.length === 1 ? newMats[0] : newMats;
+                obj.visible = true;
+                obj.castShadow = true;
+                obj.receiveShadow = true;
+            });
+        }
+
+        function focusCameraOnVRM() {
+            if (!vrm || !vrm.scene) return;
+            const box = new THREE.Box3().setFromObject(vrm.scene);
+            const size = box.getSize(new THREE.Vector3());
+            const center = box.getCenter(new THREE.Vector3());
+            vrm.scene.position.sub(center);
+            vrm.scene.position.y += size.y / 2 + 0.08;
+            const fovV = camera.fov * (Math.PI / 180);
+            const distY = (size.y / (2 * Math.tan(fovV / 2))) * 1.65;
+            const fovH = 2 * Math.atan(Math.tan(fovV / 2) * camera.aspect);
+            const distX = (size.x / (2 * Math.tan(fovH / 2))) * 1.65;
+            const dist = Math.max(distY, distX);
+            camera.position.set(0, size.y * 0.42, dist);
+            camera.lookAt(0, size.y * 0.22, 0);
+        }
+
+        async function loadVRM() {
+            loadAttempts++;
+            console.log(`[NOVA3D] Cargando... (${loadAttempts})`);
+            const paths = ['../Nova.vrm', './Nova.vrm', 'Nova.vrm', '../../Nova.vrm'];
+            for (const p of paths) {
+                try {
+                    const loader = new GLTFLoader();
+                    loader.register((parser) => new VRMLoaderPlugin(parser));
+                    const gltf = await new Promise((resolve, reject) => {
+                        loader.load(p, resolve, undefined, reject);
+                    });
+                    vrm = gltf.userData.vrm;
+                    if (!vrm) throw new Error('No VRM');
+                    try { VRMUtils.removeUnnecessaryVertices(gltf.scene); } catch(e) {}
+                    try { VRMUtils.removeUnnecessaryJoints(gltf.scene); } catch(e) {}
+                    try { VRMUtils.rotateVRM0(vrm); } catch(e) {}
+                    fixMaterials(gltf.scene);
+                    scene.add(vrm.scene);
+                    focusCameraOnVRM();
+                    if (vrm.lookAt) {
+                        try {
+                            const target = new THREE.Object3D();
+                            scene.add(target);
+                            vrm.lookAt.target = target;
+                            vrm.lookAt.smoothFactor = 0.15;
+                        } catch (e) {}
+                    }
+                    console.log('[NOVA3D] ✅ Cuerpo cargado desde:', p);
+                    
+                    // Diagnóstico: imprimir rotaciones actuales de brazos
+                    setTimeout(() => {
+                        const lArm = getBone('leftUpperArm');
+                        const rArm = getBone('rightUpperArm');
+                        if (lArm) console.log('[DIAG] leftUpperArm rot:', lArm.rotation.x.toFixed(2), lArm.rotation.y.toFixed(2), lArm.rotation.z.toFixed(2));
+                        if (rArm) console.log('[DIAG] rightUpperArm rot:', rArm.rotation.x.toFixed(2), rArm.rotation.y.toFixed(2), rArm.rotation.z.toFixed(2));
+                    }, 500);
+                    
+                    initBodySystem();
+                    return true;
+                } catch (e) {
+                    console.warn(`[NOVA3D] Falló ${p}:`, e.message);
+                }
+            }
+            if (loadAttempts < MAX_LOAD_ATTEMPTS) {
+                setTimeout(loadVRM, 1000);
+                return false;
+            }
+            console.error('[NOVA3D] No se pudo cargar Nova.vrm');
+            return false;
+        }
+
+        const BONE_NAMES = [
+            'hips','spine','chest','upperChest','neck','head',
+            'leftEye','rightEye','jaw',
+            'leftShoulder','leftUpperArm','leftLowerArm','leftHand',
+            'rightShoulder','rightUpperArm','rightLowerArm','rightHand',
+            'leftUpperLeg','leftLowerLeg','leftFoot','leftToes',
+            'rightUpperLeg','rightLowerLeg','rightFoot','rightToes',
+            'leftThumbProximal','leftThumbIntermediate','leftThumbDistal',
+            'leftIndexProximal','leftIndexIntermediate','leftIndexDistal',
+            'leftMiddleProximal','leftMiddleIntermediate','leftMiddleDistal',
+            'leftRingProximal','leftRingIntermediate','leftRingDistal',
+            'leftLittleProximal','leftLittleIntermediate','leftLittleDistal',
+            'rightThumbProximal','rightThumbIntermediate','rightThumbDistal',
+            'rightIndexProximal','rightIndexIntermediate','rightIndexDistal',
+            'rightMiddleProximal','rightMiddleIntermediate','rightMiddleDistal',
+            'rightRingProximal','rightRingIntermediate','rightRingDistal',
+            'rightLittleProximal','rightLittleIntermediate','rightLittleDistal'
+        ];
+
+        const boneTargets = new Map();
+        const boneCurrents = new Map();
+        const boneBasePose = new Map();
+
+        // ==================== SISTEMA DE HUESOS ALTERNATIVO ====================
+        // Intenta múltiples métodos para obtener el hueso
+        function getBone(name) {
+            if (!vrm || !vrm.humanoid) return null;
+            try { 
+                return vrm.humanoid.getNormalizedBoneNode(name); 
+            } catch(e) {
+                try { 
+                    return vrm.humanoid.getRawBoneNode(name); 
+                } catch(e2) { 
+                    return null; 
+                }
+            }
+        }
+
+        // Fallback: buscar hueso por nombre parcial en toda la escena
+        function findBoneFallback(name) {
+            if (!vrm?.scene) return null;
+            const hints = [name.toLowerCase()];
+            // Añadir aliases comunes
+            if (name === 'leftUpperArm') hints.push('arm_l', 'leftarm', 'upperarm_l', 'l_arm', '腕.l', '左腕');
+            if (name === 'rightUpperArm') hints.push('arm_r', 'rightarm', 'upperarm_r', 'r_arm', '腕.r', '右腕');
+            if (name === 'leftLowerArm') hints.push('forearm_l', 'leftforearm', 'l_forearm', '左ひじ');
+            if (name === 'rightLowerArm') hints.push('forearm_r', 'rightforearm', 'r_forearm', '右ひじ');
+            
+            let found = null;
+            vrm.scene.traverse((obj) => {
+                if (found) return;
+                if (obj.isBone || obj.type === 'Bone') {
+                    const n = obj.name.toLowerCase();
+                    if (hints.some(h => n.includes(h))) found = obj;
+                }
+            });
+            return found;
+        }
+
+        // Obtiene hueso con fallback
+        function getBoneSafe(name) {
+            return getBone(name) || findBoneFallback(name);
+        }
+
+        // Aplica rotación vía quaternion (evita que otros sistemas la sobreescriban)
+        function applyBoneRotation(bone, x, y, z) {
+            if (!bone) return;
+            const euler = new THREE.Euler(x, y, z, 'XYZ');
+            bone.quaternion.setFromEuler(euler);
+            // Forzar actualización de matriz
+            bone.updateMatrix();
+            bone.updateMatrixWorld(true);
+        }
+        // ==================== FIN SISTEMA ALTERNATIVO ====================
+
+        function initBodySystem() {
+            BONE_NAMES.forEach(name => {
+                boneTargets.set(name, { x: 0, y: 0, z: 0 });
+                boneCurrents.set(name, { x: 0, y: 0, z: 0 });
+                
+                // Pose base usando ARM_CONFIG para brazos
+                const cfg = ARM_CONFIG[name];
+                if (cfg) {
+                    boneBasePose.set(name, { 
+                        x: cfg.axis === 'x' ? cfg.angle : cfg.twist || 0,
+                        y: cfg.axis === 'y' ? cfg.angle : 0,
+                        z: cfg.axis === 'z' ? cfg.angle : 0
+                    });
+                } else if (name === 'leftHand') boneBasePose.set(name, { x: 0, y: 0, z: 0.08 });
+                else if (name === 'rightHand') boneBasePose.set(name, { x: 0, y: 0, z: -0.08 });
+                else if (name === 'leftShoulder') boneBasePose.set(name, { x: 0, y: 0, z: 0.02 });
+                else if (name === 'rightShoulder') boneBasePose.set(name, { x: 0, y: 0, z: -0.02 });
+                else boneBasePose.set(name, { x: 0, y: 0, z: 0 });
+            });
+        }
+
+        function setBoneTarget(name, x, y, z) {
+            if (!boneTargets.has(name)) {
+                boneTargets.set(name, { x: 0, y: 0, z: 0 });
+                boneCurrents.set(name, { x: 0, y: 0, z: 0 });
+            }
+            const t = boneTargets.get(name);
+            t.x = x; t.y = y; t.z = z;
+        }
+
+        function addBoneTarget(name, x, y, z) {
+            const base = boneBasePose.get(name) || { x: 0, y: 0, z: 0 };
+            setBoneTarget(name, base.x + x, base.y + y, base.z + z);
+        }
+
+        function updateBones(delta) {
+            const speed = 6.0 * delta;
+            boneTargets.forEach((target, name) => {
+                const current = boneCurrents.get(name);
+                if (!current) return;
+                current.x += (target.x - current.x) * speed;
+                current.y += (target.y - current.y) * speed;
+                current.z += (target.z - current.z) * speed;
+                
+                // Usar getBoneSafe para fallback, y applyBoneRotation para quaternion
+                const bone = getBoneSafe(name);
+                if (bone) {
+                    applyBoneRotation(bone, current.x, current.y, current.z);
+                }
+            });
+        }
+
+        function resetAllBoneTargets() {
+            BONE_NAMES.forEach(name => {
+                const base = boneBasePose.get(name) || { x: 0, y: 0, z: 0 };
+                setBoneTarget(name, base.x, base.y, base.z);
+            });
+        }
+
+        function clearAllExpressions() {
+            if (!vrm || !vrm.expressionManager) return;
+            try {
+                [...ALL_EXPRESSIONS, ...LIP_EXPRESSIONS].forEach(e => vrm.expressionManager.setValue(e, 0));
+            } catch (e) {}
+        }
+
+        function safeSetExpression(name, weight = 1.0) {
+            if (!vrm || !vrm.expressionManager) return false;
+            try {
+                if (ALL_EXPRESSIONS.includes(name) || LIP_EXPRESSIONS.includes(name)) {
+                    clearAllExpressions();
+                    vrm.expressionManager.setValue(name, weight);
+                    return true;
+                }
+                const fb = EXPRESSION_FALLBACK[name];
+                if (fb) {
+                    clearAllExpressions();
+                    vrm.expressionManager.setValue(fb[0], fb[1] * weight);
+                    return true;
+                }
+                return false;
+            } catch (e) { return false; }
+        }
+
+        window.setExpression = (name, weight = 1.0) => {
+            if (isDestroyed) return;
+            safeSetExpression(name, weight);
+        };
+
+        window.setSpeaking = (active) => {
+            if (isDestroyed) return;
+            isSpeaking = active;
+            if (!active && vrm && vrm.expressionManager) {
+                try { LIP_EXPRESSIONS.forEach(v => vrm.expressionManager.setValue(v, 0)); } catch (e) {}
+            }
+        };
+
+        // Ícono sobre la cabeza: refleja los mismos 5 estados que ya manda
+        // mostrar_estado() en nova_asistente.py (idle/listening/thinking/
+        // speaking/error) — no hace falta un mapeo nuevo, ya está la
+        // plomería. 'idle' no muestra nada a propósito: "no está haciendo
+        // nada" se representa con ausencia de ícono, no con uno de "reposo".
+        const ICONOS_ESTADO = {
+            'listening': '🎙️',
+            'thinking': '💭',
+            'speaking': '💬',
+            'error': '⚠️',
+        };
+        const ICONOS_CON_PULSO = new Set(['thinking', 'listening']);
+
+        function actualizarIconoEstado(state) {
+            const el = document.getElementById('estado-icono');
+            if (!el) return;
+            const icono = ICONOS_ESTADO[state];
+            if (!icono) {
+                el.classList.remove('visible', 'pulso');
+                return;
+            }
+            el.textContent = icono;
+            el.classList.add('visible');
+            el.classList.toggle('pulso', ICONOS_CON_PULSO.has(state));
+        }
+
+        window.setState = (state) => {
+            if (isDestroyed) return;
+            actualizarIconoEstado(state);
+            if (!vrm || state === currentState) return;
+            currentState = state;
+            const map = {
+                'idle': ['neutral', 1.0],
+                'listening': ['relaxed', 0.7],
+                'thinking': ['surprised', 0.4],
+                'speaking': ['happy', 0.8],
+                'error': ['sad', 0.9],
+                'celebrating': ['happy', 1.0],
+                'curious': ['relaxed', 0.5],
+                'happy': ['happy', 1.0],
+                'sad': ['sad', 0.9],
+                'angry': ['angry', 0.8],
+                'surprised': ['surprised', 1.0],
+                'waving': ['happy', 0.7],
+                'dancing': ['happy', 1.0],
+                'sleeping': ['relaxed', 1.0],
+                'excited': ['happy', 1.0],
+                'confused': ['surprised', 0.5],
+                'shy': ['relaxed', 0.6],
+                'love': ['relaxed', 0.8],
+                'stretching': ['relaxed', 0.5],
+                'yawning': ['surprised', 0.3],
+                'nodding': ['neutral', 1.0],
+                'shaking': ['neutral', 1.0],
+                'bowing': ['neutral', 1.0],
+                'jumping': ['happy', 1.0],
+                'floating': ['relaxed', 0.6],
+                'reading': ['neutral', 1.0],
+                'typing': ['neutral', 1.0],
+                'laughing': ['happy', 1.0],
+                'crying': ['sad', 1.0],
+                'winking': ['blinkLeft', 1.0],
+                'pointing': ['neutral', 1.0],
+                'writing': ['neutral', 1.0]
+            };
+            const [expr, w] = map[state] || ['neutral', 1.0];
+            safeSetExpression(expr, w);
+        };
+
+        window.novaPing = () => ({ ready: !!vrm, destroyed: isDestroyed });
+
+        window.novaForceResize = () => {
+            const w = canvas.clientWidth || window.innerWidth;
+            const h = canvas.clientHeight || window.innerHeight;
+            renderer.setSize(w, h);
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+            console.log('[NOVA3D] Resize:', w, 'x', h);
+        };
+
+        window.novaDestroy = () => {
+            isDestroyed = true;
+            if (animFrameId) cancelAnimationFrame(animFrameId);
+            try { renderer.dispose(); } catch(e) {}
+            try { scene.clear(); } catch(e) {}
+        };
+
+        function animateIdle(time, delta) {
+            const t = time;
+            const breath = fbm(t * 0.5, 3) * 0.6;
+            const s = 0.55;
+
+            addBoneTarget('hips', fbm(t * 0.6, 2) * 0.012 * s, fbm(t * 0.3, 2) * 0.018 * s, fbm(t * 0.25, 2) * 0.008 * s);
+            const hips = getBoneSafe('hips');
+            if (hips && hips.position) {
+                hips.position.y = Math.sin(t * 0.5) * 0.010 * s + Math.sin(t * 1.0) * 0.004 * s;
+            }
+
+            addBoneTarget('spine', breath * 0.018 * s, fbm(t * 0.35, 2) * 0.012 * s, 0);
+            addBoneTarget('chest', breath * 0.022 * s + Math.sin(t * 0.7) * 0.006 * s, fbm(t * 0.3, 2) * 0.010 * s, 0);
+
+            const headYaw = fbm(t * 0.35, 3) * 0.10 * s;
+            const headPitch = fbm(t * 0.45, 3) * 0.07 * s;
+            const headRoll = fbm(t * 0.25, 2) * 0.04 * s;
+            addBoneTarget('neck', headPitch * 0.5, headYaw * 0.3, headRoll * 0.4);
+            addBoneTarget('head', headPitch * 0.5 + Math.sin(t * 0.8) * 0.012 * s, headYaw * 0.7, headRoll * 0.6);
+
+            const shoulderBreath = Math.sin(t * 0.5) * 0.022 * s;
+            addBoneTarget('leftShoulder', shoulderBreath + fbm(t * 0.25, 2) * 0.015 * s, 0, fbm(t * 0.3, 2) * 0.022 * s);
+            addBoneTarget('rightShoulder', shoulderBreath + fbm(t * 0.27, 2) * 0.015 * s, 0, -fbm(t * 0.32, 2) * 0.022 * s);
+
+            // Los brazos ya tienen su pose base en ARM_CONFIG. Aquí solo añadimos micro-ruido
+            addBoneTarget('leftUpperArm', fbm(t * 0.4, 2) * 0.03 * s, fbm(t * 0.3, 2) * 0.02 * s, fbm(t * 0.5, 2) * 0.04 * s);
+            addBoneTarget('leftLowerArm', fbm(t * 0.5, 2) * 0.04 * s, fbm(t * 0.4, 2) * 0.03 * s, fbm(t * 0.6, 2) * 0.04 * s);
+            addBoneTarget('leftHand', fbm(t * 0.8, 2) * 0.05 * s, fbm(t * 0.6, 2) * 0.04 * s, fbm(t * 0.7, 2) * 0.06 * s);
+
+            addBoneTarget('rightUpperArm', fbm(t * 0.42, 2) * 0.03 * s, fbm(t * 0.32, 2) * 0.02 * s, fbm(t * 0.52, 2) * 0.04 * s);
+            addBoneTarget('rightLowerArm', fbm(t * 0.52, 2) * 0.04 * s, fbm(t * 0.42, 2) * 0.03 * s, fbm(t * 0.62, 2) * 0.04 * s);
+            addBoneTarget('rightHand', fbm(t * 0.82, 2) * 0.05 * s, fbm(t * 0.62, 2) * 0.04 * s, fbm(t * 0.72, 2) * 0.06 * s);
+
+            addBoneTarget('leftUpperLeg', fbm(t * 0.3, 2) * 0.012 * s, 0, fbm(t * 0.2, 2) * 0.008 * s);
+            addBoneTarget('leftLowerLeg', Math.abs(Math.sin(t * 0.3)) * 0.006 * s, 0, 0);
+            addBoneTarget('leftFoot', fbm(t * 0.4, 2) * 0.012 * s, fbm(t * 0.25, 2) * 0.008 * s, 0);
+
+            addBoneTarget('rightUpperLeg', fbm(t * 0.32, 2) * 0.012 * s, 0, fbm(t * 0.22, 2) * 0.008 * s);
+            addBoneTarget('rightLowerLeg', Math.abs(Math.sin(t * 0.3 + Math.PI)) * 0.006 * s, 0, 0);
+            addBoneTarget('rightFoot', fbm(t * 0.42, 2) * 0.012 * s, fbm(t * 0.27, 2) * 0.008 * s, 0);
+
+            const fingerMicro = Math.sin(t * 0.6) * 0.03 * s;
+            ['leftIndex','leftMiddle','leftRing','leftLittle'].forEach(f => {
+                addBoneTarget(f + 'Proximal', fingerMicro, 0, 0);
+                addBoneTarget(f + 'Intermediate', fingerMicro * 1.8, 0, 0);
+            });
+            ['rightIndex','rightMiddle','rightRing','rightLittle'].forEach(f => {
+                addBoneTarget(f + 'Proximal', fingerMicro, 0, 0);
+                addBoneTarget(f + 'Intermediate', fingerMicro * 1.8, 0, 0);
+            });
+            addBoneTarget('leftThumbProximal', fingerMicro * 0.8, 0, 0);
+            addBoneTarget('rightThumbProximal', fingerMicro * 0.8, 0, 0);
+        }
+
+        function animateSpeaking(time, delta) {
+            const t = time;
+            const e = 1.0;
+            addBoneTarget('hips', fbm(t * 0.8, 2) * 0.02 * e, fbm(t * 0.5, 2) * 0.025 * e, fbm(t * 0.4, 2) * 0.015 * e);
+            addBoneTarget('chest', Math.sin(t * 1.2) * 0.03 * e, fbm(t * 0.6, 2) * 0.02 * e, 0);
+            addBoneTarget('head', Math.sin(t * 1.4) * 0.06 * e + fbm(t * 0.6, 2) * 0.04 * e, Math.sin(t * 1.0) * 0.08 * e + fbm(t * 0.7, 2) * 0.05 * e, fbm(t * 0.5, 2) * 0.03 * e);
+            addBoneTarget('neck', Math.sin(t * 1.2) * 0.04 * e, Math.sin(t * 0.8) * 0.05 * e, fbm(t * 0.5, 2) * 0.02 * e);
+
+            // Gestos: brazos suben desde la pose base (ya bajada por ARM_CONFIG)
+            addBoneTarget('leftUpperArm', -0.15 + Math.sin(t * 1.0) * 0.25 * e, -0.20 + fbm(t * 0.6, 2) * 0.15 * e, 0.30 + Math.sin(t * 1.2) * 0.12 * e);
+            addBoneTarget('leftLowerArm', -0.85 + Math.sin(t * 1.6) * 0.25 * e, fbm(t * 0.9, 2) * 0.15 * e, fbm(t * 0.7, 2) * 0.12 * e);
+            addBoneTarget('leftHand', Math.sin(t * 2.0) * 0.20 * e, fbm(t * 1.2, 2) * 0.15 * e, Math.sin(t * 1.5) * 0.12 * e);
+
+            addBoneTarget('rightUpperArm', -0.10 + Math.sin(t * 0.9 + 1) * 0.22 * e, 0.20 + fbm(t * 0.55, 2) * 0.12 * e, -0.30 + Math.sin(t * 1.1 + 2) * 0.10 * e);
+            addBoneTarget('rightLowerArm', -0.80 + Math.sin(t * 1.4 + 1) * 0.22 * e, fbm(t * 0.8 + 1, 2) * 0.12 * e, fbm(t * 0.65 + 2, 2) * 0.10 * e);
+            addBoneTarget('rightHand', Math.sin(t * 1.8 + 2) * 0.18 * e, fbm(t * 1.0 + 1, 2) * 0.12 * e, Math.sin(t * 1.3 + 3) * 0.10 * e);
+
+            addBoneTarget('leftShoulder', Math.sin(t * 0.8) * 0.05 * e, 0, 0.10 + Math.sin(t * 1.0) * 0.03 * e);
+            addBoneTarget('rightShoulder', Math.sin(t * 0.9 + 1) * 0.05 * e, 0, -0.10 - Math.sin(t * 0.95 + 1) * 0.03 * e);
+
+            const talkFinger = Math.sin(t * 3) * 0.15 * e;
+            addBoneTarget('leftIndexProximal', talkFinger, 0, 0);
+            addBoneTarget('leftIndexIntermediate', talkFinger * 1.5, 0, 0);
+            addBoneTarget('rightIndexProximal', talkFinger, 0, 0);
+            addBoneTarget('rightIndexIntermediate', talkFinger * 1.5, 0, 0);
+        }
+
+        function animateListening(time, delta) {
+            const t = time;
+            const s = 0.65;
+            addBoneTarget('hips', 0.02 * s, fbm(t * 0.25, 2) * 0.015 * s, 0);
+            addBoneTarget('spine', 0.04 * s + Math.sin(t * 0.4) * 0.012 * s, fbm(t * 0.3, 2) * 0.012 * s, 0);
+            addBoneTarget('chest', 0.03 * s, fbm(t * 0.25, 2) * 0.008 * s, 0);
+            addBoneTarget('head', 0.08 * s + Math.sin(t * 0.6) * 0.03 * s, fbm(t * 0.4, 2) * 0.06 * s, fbm(t * 0.3, 2) * 0.03 * s);
+            addBoneTarget('neck', 0.06 * s + Math.sin(t * 0.5) * 0.022 * s, fbm(t * 0.35, 2) * 0.045 * s, fbm(t * 0.25, 2) * 0.022 * s);
+
+            addBoneTarget('leftUpperArm', 0.15, 0, 0.25);
+            addBoneTarget('leftLowerArm', -0.90, 0.10, 0.10);
+            addBoneTarget('leftHand', 0.05, 0, 0.05);
+
+            addBoneTarget('rightUpperArm', 0.15, 0, -0.25);
+            addBoneTarget('rightLowerArm', -0.90, -0.10, -0.10);
+            addBoneTarget('rightHand', 0.05, 0, -0.05);
+            addBoneTarget('head', 0.10, 0.18, 0.12);
+        }
+
+        function animateThinking(time, delta) {
+            const t = time;
+            addBoneTarget('hips', 0, fbm(t * 0.15, 2) * 0.02, 0);
+            addBoneTarget('spine', -0.02, fbm(t * 0.2, 2) * 0.012, 0);
+            addBoneTarget('head', -0.12 + Math.sin(t * 0.3) * 0.02, 0.18 + fbm(t * 0.22, 2) * 0.06, fbm(t * 0.25, 2) * 0.04);
+            addBoneTarget('neck', -0.09 + Math.sin(t * 0.25) * 0.018, 0.12 + fbm(t * 0.2, 2) * 0.04, fbm(t * 0.22, 2) * 0.025);
+
+            addBoneTarget('rightShoulder', 0.15, -0.20, -0.25);
+            addBoneTarget('rightUpperArm', -0.55, -0.35, -0.45);
+            addBoneTarget('rightLowerArm', -1.15, -0.25, -0.15);
+            addBoneTarget('rightHand', -0.25, 0.08, fbm(t * 0.4, 2) * 0.12);
+            addBoneTarget('rightIndexProximal', 0.35, 0, 0);
+            addBoneTarget('rightIndexIntermediate', 0.50, 0, 0);
+
+            addBoneTarget('leftUpperArm', 0.05, 0.05, 0.15);
+            addBoneTarget('leftLowerArm', -0.20, 0, 0);
+            addBoneTarget('leftHand', 0.05, 0, 0.05);
+        }
+
+        function animateEmotional(time, delta, emotion) {
+            const t = time;
+            if (emotion === 'happy' || emotion === 'celebrating' || emotion === 'excited') {
+                const e = emotion === 'excited' ? 1.5 : 1.1;
+                addBoneTarget('hips', Math.sin(t * 2.5) * 0.022 * e, fbm(t * 0.6, 2) * 0.03 * e, 0);
+                const hips = getBoneSafe('hips');
+                if (hips && hips.position) hips.position.y = Math.abs(Math.sin(t * 2.5)) * 0.03 * e;
+
+                addBoneTarget('chest', 0.03 * e + Math.sin(t * 1.5) * 0.022 * e, fbm(t * 0.5, 2) * 0.022 * e, 0);
+                addBoneTarget('leftUpperArm', -0.55 + Math.sin(t * 2.0) * 0.22 * e, 0.30, 0.45 + Math.sin(t * 1.6) * 0.12 * e);
+                addBoneTarget('rightUpperArm', -0.55 + Math.sin(t * 1.8 + 1) * 0.22 * e, -0.20, -0.45 - Math.sin(t * 1.5 + 1) * 0.12 * e);
+                addBoneTarget('head', -0.06 + Math.sin(t * 1.5) * 0.035 * e, Math.sin(t * 1.1) * 0.06 * e, Math.sin(t * 1.3) * 0.035 * e);
+
+                addBoneTarget('leftHand', 0, 0, 0.25);
+                addBoneTarget('rightHand', 0, 0, -0.25);
+                BONE_NAMES.filter(n => n.includes('Left') && !n.includes('Thumb') && !n.includes('Arm') && !n.includes('Shoulder')).forEach(n => {
+                    addBoneTarget(n, -0.15, 0, 0);
+                });
+                BONE_NAMES.filter(n => n.includes('Right') && !n.includes('Thumb') && !n.includes('Arm') && !n.includes('Shoulder')).forEach(n => {
+                    addBoneTarget(n, -0.15, 0, 0);
+                });
+
+            } else if (emotion === 'sad' || emotion === 'crying') {
+                const e = emotion === 'crying' ? 1.6 : 1.2;
+                addBoneTarget('hips', 0.02 * e, 0, 0);
+                addBoneTarget('spine', 0.06 * e, 0, 0);
+                addBoneTarget('chest', -0.025 * e, 0, 0);
+                addBoneTarget('head', 0.20 * e + Math.sin(t * 0.25) * 0.022 * e, fbm(t * 0.15, 2) * 0.03 * e, 0.06 * e);
+                addBoneTarget('neck', 0.15 * e, fbm(t * 0.18, 2) * 0.022 * e, 0.04 * e);
+                addBoneTarget('leftShoulder', 0, 0, 0.15 * e + Math.sin(t * 0.3) * 0.022 * e);
+                addBoneTarget('rightShoulder', 0, 0, -0.15 * e - Math.sin(t * 0.27) * 0.022 * e);
+                addBoneTarget('leftUpperArm', 0.10 * e, 0.20 * e, 0.30 * e);
+                addBoneTarget('leftLowerArm', -0.85 * e, 0.30 * e, 0.20 * e);
+                addBoneTarget('rightUpperArm', 0.06 * e, -0.12 * e, -0.25 * e);
+                addBoneTarget('rightLowerArm', -0.75 * e, -0.20 * e, -0.18 * e);
+
+                if (emotion === 'crying') {
+                    addBoneTarget('leftUpperArm', -0.35, 0.35, 0.55);
+                    addBoneTarget('leftLowerArm', -1.15, 0.25, 0.15);
+                    addBoneTarget('leftHand', -0.15, 0, 0.15);
+                    addBoneTarget('rightUpperArm', -0.35, -0.35, -0.55);
+                    addBoneTarget('rightLowerArm', -1.15, -0.25, -0.15);
+                    addBoneTarget('rightHand', -0.15, 0, -0.15);
+                }
+
+            } else if (emotion === 'angry') {
+                const e = 1.2;
+                addBoneTarget('hips', -0.03 * e, 0, 0);
+                addBoneTarget('spine', -0.04 * e, 0, 0);
+                addBoneTarget('head', -0.06 * e, 0, 0);
+                addBoneTarget('leftShoulder', 0.10 * e, 0, 0.10 * e + Math.sin(t * 3) * 0.022 * e);
+                addBoneTarget('rightShoulder', 0.10 * e, 0, -0.10 * e - Math.sin(t * 3.2) * 0.022 * e);
+                addBoneTarget('leftUpperArm', -0.20 * e, 0.10 * e, 0.20 * e);
+                addBoneTarget('leftLowerArm', -0.50 * e, 0, 0);
+                addBoneTarget('leftHand', 0, 0, -0.45 * e);
+                addBoneTarget('rightUpperArm', -0.20 * e, -0.06 * e, -0.18 * e);
+                addBoneTarget('rightLowerArm', -0.50 * e, 0, 0);
+                addBoneTarget('rightHand', 0, 0, 0.45 * e);
+                BONE_NAMES.filter(n => n.includes('Left') && !n.includes('Thumb') && n.includes('Intermediate')).forEach(n => addBoneTarget(n, 0.9, 0, 0));
+                BONE_NAMES.filter(n => n.includes('Right') && !n.includes('Thumb') && n.includes('Intermediate')).forEach(n => addBoneTarget(n, 0.9, 0, 0));
+            }
+        }
+
+        function animateWaving(time, delta) {
+            const t = time;
+            addBoneTarget('rightShoulder', 0.25, 0.35, -0.45);
+            addBoneTarget('rightUpperArm', -1.1, 0.55, -0.35);
+            addBoneTarget('rightLowerArm', -0.25 + Math.sin(t * 4) * 0.35, 0, 0);
+            addBoneTarget('rightHand', Math.sin(t * 4) * 0.25, 0, 0);
+            addBoneTarget('rightIndexProximal', -0.15, 0, 0);
+            addBoneTarget('rightMiddleProximal', -0.15, 0, 0);
+            addBoneTarget('rightRingProximal', -0.15, 0, 0);
+            addBoneTarget('rightLittleProximal', -0.15, 0, 0);
+            addBoneTarget('leftUpperArm', 0.08, -0.35, 0.15);
+            addBoneTarget('leftLowerArm', -0.65, 0, 0);
+            addBoneTarget('leftHand', 0, 0, 0.05);
+            addBoneTarget('head', -0.08, -0.20, 0.06);
+            addBoneTarget('neck', -0.05, -0.14, 0.04);
+        }
+
+        function animateDancing(time, delta) {
+            const t = time;
+            const beat = t * 3.5;
+            addBoneTarget('hips', Math.sin(beat) * 0.04, Math.cos(beat * 0.5) * 0.03, Math.sin(beat * 0.5) * 0.03);
+            const hips = getBoneSafe('hips');
+            if (hips && hips.position) hips.position.y = Math.abs(Math.sin(beat)) * 0.04;
+
+            addBoneTarget('spine', Math.sin(beat * 0.5) * 0.04, Math.cos(beat * 0.3) * 0.03, 0);
+            addBoneTarget('chest', Math.sin(beat * 0.7) * 0.03, 0, 0);
+
+            addBoneTarget('leftUpperArm', -0.75 + Math.sin(beat + 1) * 0.25, 0.25, 0.45 + Math.cos(beat) * 0.15);
+            addBoneTarget('leftLowerArm', -0.55 + Math.sin(beat * 1.5) * 0.25, 0.12, 0);
+            addBoneTarget('leftHand', Math.sin(beat * 2) * 0.20, 0, 0.12);
+
+            addBoneTarget('rightUpperArm', -0.75 + Math.sin(beat + 2) * 0.25, -0.25, -0.45 - Math.cos(beat) * 0.15);
+            addBoneTarget('rightLowerArm', -0.55 + Math.sin(beat * 1.5 + 1) * 0.25, -0.12, 0);
+            addBoneTarget('rightHand', Math.sin(beat * 2 + 1) * 0.20, 0, -0.12);
+
+            addBoneTarget('head', Math.sin(beat * 0.5) * 0.07, Math.cos(beat * 0.3) * 0.10, Math.sin(beat * 0.4) * 0.05);
+
+            addBoneTarget('leftUpperLeg', -0.12 + Math.sin(beat) * 0.20, 0, 0.08);
+            addBoneTarget('leftLowerLeg', 0.25 + Math.abs(Math.sin(beat)) * 0.40, 0, 0);
+            addBoneTarget('leftFoot', -0.25, 0, 0);
+
+            addBoneTarget('rightUpperLeg', 0.12 + Math.cos(beat) * 0.20, 0, -0.08);
+            addBoneTarget('rightLowerLeg', 0.15 + Math.abs(Math.cos(beat)) * 0.30, 0, 0);
+            addBoneTarget('rightFoot', -0.15, 0, 0);
+        }
+
+        function animateSleeping(time, delta) {
+            const t = time;
+            addBoneTarget('hips', 0.03, 0, 0);
+            addBoneTarget('spine', 0.08, 0, 0);
+            addBoneTarget('chest', -0.03, 0, 0);
+            addBoneTarget('neck', 0.20, 0, 0.04);
+            addBoneTarget('head', 0.30 + Math.sin(t * 0.2) * 0.03, 0, 0.07);
+            addBoneTarget('leftShoulder', 0, 0, 0.25);
+            addBoneTarget('rightShoulder', 0, 0, -0.25);
+            addBoneTarget('leftUpperArm', 0.12, 0.12, 0.35);
+            addBoneTarget('leftLowerArm', -0.90, 0.25, 0.12);
+            addBoneTarget('leftHand', 0.12, 0, 0.12);
+            addBoneTarget('rightUpperArm', 0.08, -0.08, -0.30);
+            addBoneTarget('rightLowerArm', -0.80, -0.15, -0.15);
+            addBoneTarget('rightHand', 0.12, 0, -0.12);
+        }
+
+        function animateStretching(time, delta) {
+            const t = time;
+            const phase = Math.sin(t * 0.8);
+            addBoneTarget('hips', 0, 0, phase * 0.03);
+            addBoneTarget('spine', -0.07 + phase * 0.04, 0, 0);
+            addBoneTarget('chest', 0.07, 0, 0);
+            addBoneTarget('leftUpperArm', -1.35, 0.15, 0.15);
+            addBoneTarget('leftLowerArm', -0.15, 0, 0);
+            addBoneTarget('leftHand', 0, 0, 0);
+            addBoneTarget('rightUpperArm', -1.35, -0.15, -0.15);
+            addBoneTarget('rightLowerArm', -0.15, 0, 0);
+            addBoneTarget('rightHand', 0, 0, 0);
+            addBoneTarget('head', -0.14, 0, phase * 0.04);
+            addBoneTarget('leftFoot', 0.35, 0, 0);
+            addBoneTarget('rightFoot', 0.35, 0, 0);
+        }
+
+        function animateBowing(time, delta) {
+            const t = time;
+            const depth = Math.min(1, Math.sin(t * 2) * 0.5 + 0.5) * 0.65;
+            addBoneTarget('hips', 0.03, 0, 0);
+            addBoneTarget('spine', depth * 0.40, 0, 0);
+            addBoneTarget('chest', depth * 0.30, 0, 0);
+            addBoneTarget('neck', depth * 0.20, 0, 0);
+            addBoneTarget('head', depth * 0.28, 0, 0);
+            addBoneTarget('leftUpperArm', 0.08, -0.35, 0.12);
+            addBoneTarget('leftLowerArm', -0.65, 0, 0);
+            addBoneTarget('rightUpperArm', 0.08, 0.35, -0.12);
+            addBoneTarget('rightLowerArm', -0.65, 0, 0);
+        }
+
+        function animateJumping(time, delta) {
+            const t = time;
+            const jump = Math.abs(Math.sin(t * 3.5));
+            addBoneTarget('hips', 0, 0, 0);
+            const hips = getBoneSafe('hips');
+            if (hips && hips.position) hips.position.y = jump * 0.22;
+
+            addBoneTarget('leftUpperLeg', -0.35 - jump * 0.40, 0, 0.12);
+            addBoneTarget('leftLowerLeg', 0.70 + jump * 0.60, 0, 0);
+            addBoneTarget('rightUpperLeg', -0.35 - jump * 0.40, 0, -0.12);
+            addBoneTarget('rightLowerLeg', 0.70 + jump * 0.60, 0, 0);
+
+            addBoneTarget('leftUpperArm', -0.60, 0, 0.35);
+            addBoneTarget('rightUpperArm', -0.60, 0, -0.35);
+            addBoneTarget('leftLowerArm', -0.40, 0, 0);
+            addBoneTarget('rightLowerArm', -0.40, 0, 0);
+            addBoneTarget('head', -0.08, 0, 0);
+        }
+
+        function animateFloating(time, delta) {
+            const t = time;
+            addBoneTarget('hips', 0, 0, Math.sin(t * 0.5) * 0.03);
+            const hips = getBoneSafe('hips');
+            if (hips && hips.position) hips.position.y = Math.sin(t * 0.8) * 0.08 + 0.08;
+
+            addBoneTarget('spine', Math.sin(t * 0.4) * 0.015, 0, 0);
+            addBoneTarget('leftUpperArm', -0.25 + Math.sin(t * 0.6) * 0.08, 0.12, 0.25);
+            addBoneTarget('rightUpperArm', -0.25 + Math.sin(t * 0.6 + 1) * 0.08, -0.12, -0.25);
+            addBoneTarget('leftLowerArm', -0.15, 0, 0);
+            addBoneTarget('rightLowerArm', -0.15, 0, 0);
+            addBoneTarget('leftHand', 0, 0, 0.08);
+            addBoneTarget('rightHand', 0, 0, -0.08);
+
+            addBoneTarget('leftUpperLeg', 0.12, 0, 0.08);
+            addBoneTarget('leftLowerLeg', 0.25, 0, 0);
+            addBoneTarget('rightUpperLeg', 0.12, 0, -0.08);
+            addBoneTarget('rightLowerLeg', 0.25, 0, 0);
+        }
+
+        function animateTyping(time, delta) {
+            const t = time;
+            addBoneTarget('hips', 0.03, 0, 0);
+            addBoneTarget('spine', 0.10, 0, 0);
+            addBoneTarget('chest', 0.03, 0, 0);
+            addBoneTarget('head', 0.15, 0.06, 0);
+
+            addBoneTarget('leftUpperArm', -0.55, 0.35, 0.35);
+            addBoneTarget('leftLowerArm', -0.90, 0.25, 0.12);
+            addBoneTarget('leftHand', 0.12, 0, 0.12);
+
+            addBoneTarget('rightUpperArm', -0.55, -0.25, -0.35);
+            addBoneTarget('rightLowerArm', -0.90, -0.25, -0.12);
+            addBoneTarget('rightHand', 0.12, 0, -0.12);
+
+            const typeSpeed = t * 10;
+            addBoneTarget('leftIndexProximal', Math.sin(typeSpeed) * 0.20, 0, 0);
+            addBoneTarget('leftMiddleProximal', Math.sin(typeSpeed + 1) * 0.20, 0, 0);
+            addBoneTarget('leftRingProximal', Math.sin(typeSpeed + 2) * 0.18, 0, 0);
+            addBoneTarget('leftLittleProximal', Math.sin(typeSpeed + 3) * 0.15, 0, 0);
+            addBoneTarget('leftThumbProximal', Math.sin(typeSpeed + 0.5) * 0.15, 0, 0);
+
+            addBoneTarget('rightIndexProximal', Math.sin(typeSpeed + 1.5) * 0.20, 0, 0);
+            addBoneTarget('rightMiddleProximal', Math.sin(typeSpeed + 2.5) * 0.20, 0, 0);
+            addBoneTarget('rightRingProximal', Math.sin(typeSpeed + 3.5) * 0.18, 0, 0);
+            addBoneTarget('rightLittleProximal', Math.sin(typeSpeed + 4.5) * 0.15, 0, 0);
+            addBoneTarget('rightThumbProximal', Math.sin(typeSpeed + 1) * 0.15, 0, 0);
+        }
+
+        function animateReading(time, delta) {
+            const t = time;
+            addBoneTarget('hips', 0.03, 0, 0);
+            addBoneTarget('spine', 0.12, 0, 0);
+            addBoneTarget('head', 0.30, 0.06, 0);
+            addBoneTarget('neck', 0.25, 0.04, 0);
+
+            addBoneTarget('leftUpperArm', -0.45, 0.25, 0.35);
+            addBoneTarget('leftLowerArm', -0.70, 0.35, 0.25);
+            addBoneTarget('leftHand', 0.25, 0, 0.12);
+
+            addBoneTarget('rightUpperArm', -0.45, -0.12, -0.35);
+            addBoneTarget('rightLowerArm', -0.70, -0.25, -0.25);
+            addBoneTarget('rightHand', 0.25, 0, -0.12);
+
+            ['left','right'].forEach(side => {
+                ['Index','Middle','Ring','Little'].forEach(f => {
+                    addBoneTarget(side + f + 'Proximal', 0.35, 0, 0);
+                    addBoneTarget(side + f + 'Intermediate', 0.50, 0, 0);
+                });
+                addBoneTarget(side + 'ThumbProximal', 0.25, 0, 0);
+            });
+        }
+
+        function animatePointing(time, delta) {
+            const t = time;
+            addBoneTarget('rightShoulder', 0.12, 0.25, -0.35);
+            addBoneTarget('rightUpperArm', -0.90, 0.55, -0.25);
+            addBoneTarget('rightLowerArm', -0.25, 0.25, 0);
+            addBoneTarget('rightHand', 0, 0, 0);
+            addBoneTarget('rightIndexProximal', -0.15, 0, 0);
+            addBoneTarget('rightIndexIntermediate', -0.15, 0, 0);
+            ['Middle','Ring','Little'].forEach(f => {
+                addBoneTarget('right' + f + 'Proximal', 0.7, 0, 0);
+                addBoneTarget('right' + f + 'Intermediate', 0.9, 0, 0);
+            });
+            addBoneTarget('rightThumbProximal', 0.35, 0, 0);
+
+            addBoneTarget('leftUpperArm', 0.08, -0.35, 0.15);
+            addBoneTarget('leftLowerArm', -0.65, 0, 0);
+            addBoneTarget('head', -0.08, -0.14, 0);
+        }
+
+        function animateShy(time, delta) {
+            const t = time;
+            addBoneTarget('head', 0.20, 0.25, 0.12);
+            addBoneTarget('neck', 0.14, 0.18, 0.08);
+            addBoneTarget('spine', 0.07, 0, 0);
+
+            addBoneTarget('leftUpperArm', -0.65, 0.45, 0.55);
+            addBoneTarget('leftLowerArm', -1.10, 0.25, 0.12);
+            addBoneTarget('leftHand', -0.25, 0.12, 0.12);
+
+            addBoneTarget('rightUpperArm', -0.65, -0.35, -0.55);
+            addBoneTarget('rightLowerArm', -1.10, -0.25, -0.12);
+            addBoneTarget('rightHand', -0.25, -0.12, -0.12);
+
+            ['left','right'].forEach(side => {
+                addBoneTarget(side + 'IndexProximal', 0.25, 0, 0);
+                addBoneTarget(side + 'MiddleProximal', 0.35, 0, 0);
+                addBoneTarget(side + 'RingProximal', 0.35, 0, 0);
+                addBoneTarget(side + 'LittleProximal', 0.25, 0, 0);
+            });
+        }
+
+        function animateNodding(time, delta) {
+            const t = time;
+            const nod = Math.sin(t * 3.5) * 0.22;
+            addBoneTarget('head', nod, 0, 0);
+            addBoneTarget('neck', nod * 0.7, 0, 0);
+            addBoneTarget('spine', nod * 0.15, 0, 0);
+            addBoneTarget('leftUpperArm', 0.10, -0.35, 0.15);
+            addBoneTarget('leftLowerArm', -0.65, 0, 0);
+            addBoneTarget('rightUpperArm', 0.10, 0.35, -0.15);
+            addBoneTarget('rightLowerArm', -0.65, 0, 0);
+        }
+
+        function animateShaking(time, delta) {
+            const t = time;
+            const shake = Math.sin(t * 4.5) * 0.18;
+            addBoneTarget('head', 0, shake, 0);
+            addBoneTarget('neck', 0, shake * 0.7, 0);
+            addBoneTarget('leftUpperArm', 0.10, -0.35, 0.15);
+            addBoneTarget('leftLowerArm', -0.65, 0, 0);
+            addBoneTarget('rightUpperArm', 0.10, 0.35, -0.15);
+            addBoneTarget('rightLowerArm', -0.65, 0, 0);
+        }
+
+        function animateYawning(time, delta) {
+            const t = time;
+            const phase = Math.sin(t * 0.5);
+            addBoneTarget('head', -0.25 + phase * 0.07, 0, 0);
+            addBoneTarget('neck', -0.18, 0, 0);
+            addBoneTarget('jaw', 0.40 + phase * 0.12, 0, 0);
+            addBoneTarget('leftUpperArm', 0.25, 0.35, 0.55);
+            addBoneTarget('leftLowerArm', -1.10, 0.12, 0);
+            addBoneTarget('rightUpperArm', 0.25, -0.25, -0.55);
+            addBoneTarget('rightLowerArm', -1.10, -0.12, 0);
+        }
+
+        function animateLaughing(time, delta) {
+            const t = time;
+            const laugh = Math.sin(t * 5.5) * 0.15;
+            addBoneTarget('head', -0.14 + laugh, laugh * 0.7, 0);
+            addBoneTarget('chest', laugh * 0.30, 0, 0);
+            addBoneTarget('spine', laugh * 0.22, 0, 0);
+            addBoneTarget('leftUpperArm', -0.55, 0.25, 0.35);
+            addBoneTarget('leftLowerArm', -0.55, 0, 0);
+            addBoneTarget('rightUpperArm', -0.55, -0.25, -0.35);
+            addBoneTarget('rightLowerArm', -0.55, 0, 0);
+            addBoneTarget('jaw', 0.25 + laugh * 0.12, 0, 0);
+        }
+
+        function animateWriting(time, delta) {
+            const t = time;
+            addBoneTarget('spine', 0.14, 0, 0);
+            addBoneTarget('head', 0.18, 0.06, 0);
+            addBoneTarget('rightUpperArm', -0.45, -0.35, -0.25);
+            addBoneTarget('rightLowerArm', -0.80, -0.25, 0);
+            addBoneTarget('rightHand', 0.12, 0, -0.12);
+            addBoneTarget('rightIndexProximal', 0.25, 0, 0);
+            addBoneTarget('rightThumbProximal', 0.15, 0, 0);
+            addBoneTarget('rightIndexIntermediate', Math.sin(t * 8) * 0.15, 0, 0);
+            addBoneTarget('leftUpperArm', -0.35, 0.25, 0.25);
+            addBoneTarget('leftLowerArm', -0.55, 0.25, 0.12);
+            addBoneTarget('leftHand', 0, 0, 0.12);
+        }
+
+        function applyAnimation(time, delta) {
+            resetAllBoneTargets();
+            const breath = Math.sin(time * 0.5) * 0.005;
+            addBoneTarget('spine', breath, 0, 0);
+            addBoneTarget('chest', breath * 1.2, 0, 0);
+
+            switch (currentState) {
+                case 'speaking': animateSpeaking(time, delta); break;
+                case 'listening': animateListening(time, delta); break;
+                case 'thinking': animateThinking(time, delta); break;
+                case 'happy': case 'celebrating': case 'excited': animateEmotional(time, delta, 'happy'); break;
+                case 'sad': case 'crying': animateEmotional(time, delta, 'sad'); break;
+                case 'angry': animateEmotional(time, delta, 'angry'); break;
+                case 'waving': animateWaving(time, delta); break;
+                case 'dancing': animateDancing(time, delta); break;
+                case 'sleeping': animateSleeping(time, delta); break;
+                case 'stretching': animateStretching(time, delta); break;
+                case 'bowing': animateBowing(time, delta); break;
+                case 'jumping': animateJumping(time, delta); break;
+                case 'floating': animateFloating(time, delta); break;
+                case 'typing': animateTyping(time, delta); break;
+                case 'reading': animateReading(time, delta); break;
+                case 'pointing': animatePointing(time, delta); break;
+                case 'shy': animateShy(time, delta); break;
+                case 'nodding': animateNodding(time, delta); break;
+                case 'shaking': animateShaking(time, delta); break;
+                case 'yawning': animateYawning(time, delta); break;
+                case 'laughing': animateLaughing(time, delta); break;
+                case 'writing': animateWriting(time, delta); break;
+                default: animateIdle(time, delta); break;
+            }
+            updateBones(delta);
+        }
+
+        function animate() {
+            if (isDestroyed) return;
+            animFrameId = requestAnimationFrame(animate);
+            const delta = Math.min(clock.getDelta(), 0.1);
+            const time = clock.getElapsedTime();
+
+            if (vrm) {
+                try {
+                    vrm.update(delta);
+                    applyAnimation(time, delta);
+
+                    blinkTimer += delta;
+                    if (blinkTimer >= nextBlink) {
+                        try {
+                            vrm.expressionManager.setValue('blink', 1.0);
+                            setTimeout(() => {
+                                if (!isDestroyed && vrm) {
+                                    try { vrm.expressionManager.setValue('blink', 0); } catch(e) {}
+                                }
+                            }, 100 + rng.next() * 80);
+                        } catch (e) {}
+                        blinkTimer = 0;
+                        nextBlink = 2 + rng.next() * 4;
+                    }
+
+                    if (isSpeaking) {
+                        try {
+                            const lip = (Math.sin(time * 10) * 0.5 + 0.5) * (0.6 + rng.next() * 0.3);
+                            vrm.expressionManager.setValue('aa', lip);
+                            if (rng.next() > 0.7) {
+                                vrm.expressionManager.setValue('aa', 0);
+                                vrm.expressionManager.setValue('oh', lip * 0.5);
+                            }
+                        } catch (e) {}
+                    }
+
+                } catch (e) {
+                    console.error('[NOVA3D] Error loop:', e);
+                }
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        let mouseX = 0, mouseY = 0;
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+        });
+
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            return false;
+        });
+
+        setInterval(() => {
+            if (isDestroyed || !vrm?.lookAt?.target) return;
+            try {
+                const current = vrm.lookAt.target.position;
+                current.x += (mouseX * 6 - current.x) * 0.05;
+                current.y += (mouseY * 3 + 1.4 - current.y) * 0.05;
+            } catch (e) {}
+        }, 16);
+
+        window.addEventListener('resize', () => {
+            if (isDestroyed) return;
+            const w = canvas.clientWidth || window.innerWidth;
+            const h = canvas.clientHeight || window.innerHeight;
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+            renderer.setSize(w, h);
+        });
+
+        loadVRM().then(ok => {
+            if (ok) animate();
+        });
+
+        console.log('[NOVA3D] Engine v10.3 — Alternativa brazos');
+                        // Hooks para el menú contextual de PyQt
+        window.novaSendMessage = (text) => {
+            console.log('[NOVA] Mensaje recibido:', text);
+            // Aquí conectas tu lógica de chat/IA
+            // Ejemplo: enviar a tu API, mostrar burbuja, etc.
+        };
+
+        window.novaToggleMic = (active) => {
+            console.log('[NOVA] Micrófono:', active ? 'ON' : 'OFF');
+            // Aquí activas/desactivas reconocimiento de voz
+        };
+
+        window.novaMuteTTS = (muted) => {
+            console.log('[NOVA] TTS mute:', muted);
+            // Aquí silencias el texto-a-voz
+        };
+    </script>
+</body>
+</html>

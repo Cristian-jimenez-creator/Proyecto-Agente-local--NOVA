@@ -1,0 +1,191 @@
+2026-09-06 12:12:28,132 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-06 12:12:28,140 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-06 12:12:44,844 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-06 12:12:44,845 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-06 14:10:44,322 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-06 14:10:44,326 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-06 14:10:57,222 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-06 14:10:57,223 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-06 18:23:04,294 | DEBUG    | nova_skills | aplicaciones:16 | [SKILLS] psutil no disponible en aplicaciones.py (No module named 'psutil')
+2026-09-06 18:23:04,296 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-06 18:23:04,298 | DEBUG    | nova_skills | sistema:16 | [SKILLS] psutil no disponible en sistema.py (No module named 'psutil')
+2026-09-06 18:23:04,298 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-06 18:24:38,865 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-06 18:24:38,866 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-06 18:24:49,595 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-06 18:24:49,597 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-06 19:00:47,441 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-06 19:00:47,443 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-06 19:01:00,846 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-06 19:01:00,847 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-06 19:24:30,618 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-06 19:24:30,620 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-06 19:24:46,730 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-06 19:24:46,734 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-06 19:53:15,179 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-06 19:53:15,183 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-06 19:53:48,475 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-06 19:53:48,487 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-06 19:55:38,979 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-06 19:55:38,983 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-06 19:56:06,131 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-06 19:56:06,136 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-06 20:22:35,825 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-06 20:22:35,827 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-06 20:22:46,804 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-06 20:22:46,805 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-06 23:59:50,559 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-06 23:59:50,583 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-07 00:00:23,306 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-07 00:00:23,310 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-07 18:35:39,687 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-07 18:35:39,690 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-07 18:35:52,831 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-07 18:35:52,832 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-07 19:42:15,175 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-07 19:42:15,203 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-07 19:43:15,293 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-07 19:43:15,304 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-07 21:58:32,202 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-07 21:58:32,204 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-07 21:58:46,476 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-07 21:58:46,477 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-08 18:27:33,995 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-08 18:27:34,009 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-08 18:27:54,140 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-08 18:27:54,142 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-08 19:06:30,634 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-08 19:06:30,644 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-08 19:06:49,883 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-08 19:06:49,885 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-10 19:58:57,324 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-10 19:58:57,337 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-10 20:00:38,610 | DEBUG    | nova_skills | archivos:29 | [SKILLS] send2trash no disponible en archivos.py (No module named 'send2trash')
+2026-09-10 20:00:38,612 | DEBUG    | nova_skills | sistema:23 | [SKILLS] screen_brightness_control no disponible en sistema.py (No module named 'screen_brightness_control')
+2026-09-10 20:03:50,300 | DEBUG    | nova_skills | raton:114 | [RATON] click en (125,150) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-10 20:03:55,923 | DEBUG    | nova_skills | raton:114 | [RATON] click en (125,150) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-10 20:04:25,109 | DEBUG    | nova_skills | raton:114 | [RATON] click en (125,150) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-10 20:04:27,127 | DEBUG    | nova_skills | raton:114 | [RATON] click en (125,150) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-21 20:08:14,295 | DEBUG    | nova_skills | raton:114 | [RATON] click en (1200,600) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-21 20:08:34,633 | ERROR    | nova_skills | _core:120 | [SALUD] Fallo en skill 'click' (#1 en 60s): (2216,1125) está fuera de la resolución de pantalla (1920x1080)
+Traceback (most recent call last):
+  File "C:\NovaIA\nova_skills\_core.py", line 166, in ejecutar
+    resultado = s.fn(*args, **kwargs)
+  File "C:\NovaIA\nova_skills\raton.py", line 101, in click
+    raise ValueError(f"({x},{y}) está fuera de la resolución de pantalla ({sw}x{sh})")
+ValueError: (2216,1125) está fuera de la resolución de pantalla (1920x1080)
+2026-09-21 20:08:56,074 | ERROR    | nova_skills | _core:120 | [SALUD] Fallo en skill 'click' (#2 en 60s): (2250,1125) está fuera de la resolución de pantalla (1920x1080)
+Traceback (most recent call last):
+  File "C:\NovaIA\nova_skills\_core.py", line 166, in ejecutar
+    resultado = s.fn(*args, **kwargs)
+  File "C:\NovaIA\nova_skills\raton.py", line 101, in click
+    raise ValueError(f"({x},{y}) está fuera de la resolución de pantalla ({sw}x{sh})")
+ValueError: (2250,1125) está fuera de la resolución de pantalla (1920x1080)
+2026-09-21 20:09:16,441 | ERROR    | nova_skills | _core:120 | [SALUD] Fallo en skill 'click' (#3 en 60s): (2250,1125) está fuera de la resolución de pantalla (1920x1080)
+Traceback (most recent call last):
+  File "C:\NovaIA\nova_skills\_core.py", line 166, in ejecutar
+    resultado = s.fn(*args, **kwargs)
+  File "C:\NovaIA\nova_skills\raton.py", line 101, in click
+    raise ValueError(f"({x},{y}) está fuera de la resolución de pantalla ({sw}x{sh})")
+ValueError: (2250,1125) está fuera de la resolución de pantalla (1920x1080)
+2026-09-21 20:09:36,768 | ERROR    | nova_skills | _core:120 | [SALUD] Fallo en skill 'click' (#3 en 60s): (4219,2109) está fuera de la resolución de pantalla (1920x1080)
+Traceback (most recent call last):
+  File "C:\NovaIA\nova_skills\_core.py", line 166, in ejecutar
+    resultado = s.fn(*args, **kwargs)
+  File "C:\NovaIA\nova_skills\raton.py", line 101, in click
+    raise ValueError(f"({x},{y}) está fuera de la resolución de pantalla ({sw}x{sh})")
+ValueError: (4219,2109) está fuera de la resolución de pantalla (1920x1080)
+2026-09-21 20:10:05,491 | ERROR    | nova_skills | _core:120 | [SALUD] Fallo en skill 'click' (#3 en 60s): (4219,2109) está fuera de la resolución de pantalla (1920x1080)
+Traceback (most recent call last):
+  File "C:\NovaIA\nova_skills\_core.py", line 166, in ejecutar
+    resultado = s.fn(*args, **kwargs)
+  File "C:\NovaIA\nova_skills\raton.py", line 101, in click
+    raise ValueError(f"({x},{y}) está fuera de la resolución de pantalla ({sw}x{sh})")
+ValueError: (4219,2109) está fuera de la resolución de pantalla (1920x1080)
+2026-09-21 20:10:40,653 | ERROR    | nova_skills | _core:120 | [SALUD] Fallo en skill 'click' (#2 en 60s): (7911,3954) está fuera de la resolución de pantalla (1920x1080)
+Traceback (most recent call last):
+  File "C:\NovaIA\nova_skills\_core.py", line 166, in ejecutar
+    resultado = s.fn(*args, **kwargs)
+  File "C:\NovaIA\nova_skills\raton.py", line 101, in click
+    raise ValueError(f"({x},{y}) está fuera de la resolución de pantalla ({sw}x{sh})")
+ValueError: (7911,3954) está fuera de la resolución de pantalla (1920x1080)
+2026-09-21 20:24:07,690 | DEBUG    | nova_skills | raton:114 | [RATON] click en (1554,409) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-21 20:24:58,965 | DEBUG    | nova_skills | raton:114 | [RATON] click en (1806,630) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-21 20:25:18,824 | DEBUG    | nova_skills | raton:114 | [RATON] click en (1806,630) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-21 20:25:40,903 | DEBUG    | nova_skills | raton:114 | [RATON] click en (1806,630) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-21 20:54:28,683 | DEBUG    | nova_skills | raton:114 | [RATON] click en (1234,495) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-21 20:54:45,644 | DEBUG    | nova_skills | raton:114 | [RATON] click en (1919,690) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-21 20:55:02,747 | DEBUG    | nova_skills | raton:114 | [RATON] click en (1918,1079) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-21 20:55:02,747 | ERROR    | nova_skills | _core:120 | [SALUD] Fallo en skill 'click' (#1 en 60s): PyAutoGUI fail-safe triggered from mouse moving to a corner of the screen. To disable this fail-safe, set pyautogui.FAILSAFE to False. DISABLING FAIL-SAFE IS NOT RECOMMENDED.
+Traceback (most recent call last):
+  File "C:\NovaIA\nova_skills\_core.py", line 166, in ejecutar
+    resultado = s.fn(*args, **kwargs)
+  File "C:\NovaIA\nova_skills\raton.py", line 115, in click
+    pyautogui.click(x=x + 2, y=y + 2, button=boton, clicks=clics, interval=0.05)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\NovaIA\.venv\Lib\site-packages\pyautogui\__init__.py", line 594, in wrapper
+    returnVal = wrappedFunction(*args, **kwargs)
+  File "C:\NovaIA\.venv\Lib\site-packages\pyautogui\__init__.py", line 988, in click
+    _mouseMoveDrag("move", x, y, 0, 0, duration, tween)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\NovaIA\.venv\Lib\site-packages\pyautogui\__init__.py", line 1514, in _mouseMoveDrag
+    failSafeCheck()
+    ~~~~~~~~~~~~~^^
+  File "C:\NovaIA\.venv\Lib\site-packages\pyautogui\__init__.py", line 1734, in failSafeCheck
+    raise FailSafeException(
+        "PyAutoGUI fail-safe triggered from mouse moving to a corner of the screen. To disable this fail-safe, set pyautogui.FAILSAFE to False. DISABLING FAIL-SAFE IS NOT RECOMMENDED."
+    )
+pyautogui.FailSafeException: PyAutoGUI fail-safe triggered from mouse moving to a corner of the screen. To disable this fail-safe, set pyautogui.FAILSAFE to False. DISABLING FAIL-SAFE IS NOT RECOMMENDED.
+2026-09-21 20:55:20,212 | DEBUG    | nova_skills | raton:114 | [RATON] click en (1919,928) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-21 20:55:37,287 | DEBUG    | nova_skills | raton:114 | [RATON] click en (231,855) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-21 20:58:10,454 | DEBUG    | nova_skills | raton:114 | [RATON] click en (268,495) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-21 20:59:49,586 | DEBUG    | nova_skills | raton:114 | [RATON] click en (1919,1079) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-21 21:00:06,116 | DEBUG    | nova_skills | raton:114 | [RATON] click en (1918,1078) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-21 21:00:06,118 | ERROR    | nova_skills | _core:120 | [SALUD] Fallo en skill 'click' (#1 en 60s): PyAutoGUI fail-safe triggered from mouse moving to a corner of the screen. To disable this fail-safe, set pyautogui.FAILSAFE to False. DISABLING FAIL-SAFE IS NOT RECOMMENDED.
+Traceback (most recent call last):
+  File "C:\NovaIA\nova_skills\_core.py", line 166, in ejecutar
+    resultado = s.fn(*args, **kwargs)
+  File "C:\NovaIA\nova_skills\raton.py", line 115, in click
+    pyautogui.click(x=x + 2, y=y + 2, button=boton, clicks=clics, interval=0.05)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\NovaIA\.venv\Lib\site-packages\pyautogui\__init__.py", line 594, in wrapper
+    returnVal = wrappedFunction(*args, **kwargs)
+  File "C:\NovaIA\.venv\Lib\site-packages\pyautogui\__init__.py", line 988, in click
+    _mouseMoveDrag("move", x, y, 0, 0, duration, tween)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\NovaIA\.venv\Lib\site-packages\pyautogui\__init__.py", line 1514, in _mouseMoveDrag
+    failSafeCheck()
+    ~~~~~~~~~~~~~^^
+  File "C:\NovaIA\.venv\Lib\site-packages\pyautogui\__init__.py", line 1734, in failSafeCheck
+    raise FailSafeException(
+        "PyAutoGUI fail-safe triggered from mouse moving to a corner of the screen. To disable this fail-safe, set pyautogui.FAILSAFE to False. DISABLING FAIL-SAFE IS NOT RECOMMENDED."
+    )
+pyautogui.FailSafeException: PyAutoGUI fail-safe triggered from mouse moving to a corner of the screen. To disable this fail-safe, set pyautogui.FAILSAFE to False. DISABLING FAIL-SAFE IS NOT RECOMMENDED.
+2026-09-21 21:00:24,035 | ERROR    | nova_skills | _core:120 | [SALUD] Fallo en skill 'click' (#2 en 60s): PyAutoGUI fail-safe triggered from mouse moving to a corner of the screen. To disable this fail-safe, set pyautogui.FAILSAFE to False. DISABLING FAIL-SAFE IS NOT RECOMMENDED.
+Traceback (most recent call last):
+  File "C:\NovaIA\nova_skills\_core.py", line 166, in ejecutar
+    resultado = s.fn(*args, **kwargs)
+  File "C:\NovaIA\nova_skills\raton.py", line 104, in click
+    pyautogui.click(x=x, y=y, button=boton, clicks=clics, interval=0.05)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\NovaIA\.venv\Lib\site-packages\pyautogui\__init__.py", line 594, in wrapper
+    returnVal = wrappedFunction(*args, **kwargs)
+  File "C:\NovaIA\.venv\Lib\site-packages\pyautogui\__init__.py", line 999, in click
+    failSafeCheck()
+    ~~~~~~~~~~~~~^^
+  File "C:\NovaIA\.venv\Lib\site-packages\pyautogui\__init__.py", line 1734, in failSafeCheck
+    raise FailSafeException(
+        "PyAutoGUI fail-safe triggered from mouse moving to a corner of the screen. To disable this fail-safe, set pyautogui.FAILSAFE to False. DISABLING FAIL-SAFE IS NOT RECOMMENDED."
+    )
+pyautogui.FailSafeException: PyAutoGUI fail-safe triggered from mouse moving to a corner of the screen. To disable this fail-safe, set pyautogui.FAILSAFE to False. DISABLING FAIL-SAFE IS NOT RECOMMENDED.
+2026-09-29 20:12:06,950 | DEBUG    | nova_skills | raton:114 | [RATON] click en (1219,656) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-29 20:12:26,853 | DEBUG    | nova_skills | raton:114 | [RATON] click en (231,855) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-29 20:12:46,555 | DEBUG    | nova_skills | raton:114 | [RATON] click en (1219,656) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-29 20:13:53,913 | DEBUG    | nova_skills | raton:114 | [RATON] click en (1191,684) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-29 20:14:13,627 | DEBUG    | nova_skills | raton:114 | [RATON] click en (231,855) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-29 20:14:32,794 | DEBUG    | nova_skills | raton:114 | [RATON] click en (231,855) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-29 20:14:51,494 | DEBUG    | nova_skills | raton:114 | [RATON] click en (231,855) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-29 20:16:13,529 | DEBUG    | nova_skills | raton:114 | [RATON] click en (705,630) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-29 20:18:21,178 | DEBUG    | nova_skills | raton:114 | [RATON] click en (231,855) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-29 20:21:14,500 | DEBUG    | nova_skills | raton:114 | [RATON] click en (189,308) sin cambio visual detectado, reintentando con jitter de 2px
+2026-09-29 21:06:51,798 | DEBUG    | nova_skills | raton:114 | [RATON] click en (1911,1071) sin cambio visual detectado, reintentando con jitter de 2px

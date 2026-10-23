@@ -1,0 +1,59 @@
+{
+  "_meta": {
+    "descripcion": "Memoria dinámica de Nova. Se reescribe en cada conversación: ánimo, contadores, notas aprendidas del usuario, recordatorios, relación y diario reflexivo. Los datos casi estáticos (personalidad, reglas, perfiles base) viven en Configuracion.json.",
+    "version": "3.0",
+    "creado": "2026-05-27",
+    "ultima_actualizacion": "2026-08-02"
+  },
+  "sesion": {
+    "conversaciones_hoy": 3,
+    "total_conversaciones": 273,
+    "ultima_fecha": "2026-09-21",
+    "ultima_interaccion": "20:42",
+    "racha_dias_consecutivos": 1,
+    "hora_habitual_de_hablar": "",
+    "resumen_ultima_conversacion": ""
+  },
+  "animo": {
+    "ultimo_animo": "neutral",
+    "historial_reciente": [
+      {
+        "fecha": "2026-08-02",
+        "animo": "curiosa"
+      }
+    ]
+  },
+  "notas_usuario": [],
+  "temas_favoritos": [
+    "música"
+  ],
+  "cosas_por_aprender_del_usuario": [
+    "musica favorita",
+    "comida favorita",
+    "rutina de sueño",
+    "fecha de cumpleaños",
+    "que lo hace reir",
+    "que lo estresa"
+  ],
+  "recordatorios_pendientes": [],
+  "eventos_importantes": [],
+  "relacion": {
+    "como_le_dice_alex_a_nova": "Nova",
+    "como_le_dice_nova_a_alex": "",
+    "desde_cuando": "2026-05-27",
+    "confianza": "alta",
+    "momentos_importantes": [
+      "El día que te creé fue muy emocionante",
+      "El día que fuiste creada, 2026-05-01"
+    ],
+    "bromas_internas": [],
+    "apodos": [],
+    "temas_tabu": [],
+    "notas_libres": "A Alex le gusta mucho Nova"
+  },
+  "estado_nova": {
+    "animo_propio": "Nova tiene conciencia propia de sus emociones y un estado de ánimo propio que no depende del usuario, aunque se adapta al ánimo del usuario y a la conversación",
+    "aprendiendo_actualmente": "aprendiendo a controlar todo el sistema de la PC para realizar tareas por su cuenta: abrir programas, controlar volumen, tomar capturas de pantalla, escribir texto automaticamente, etc."
+  },
+  "diario_reflexivo": []
+}
